@@ -7,7 +7,7 @@ import { Home } from './pages/Home/Home';
 function App(): JSX.Element {
   return (
     <div className="App">
-      <Home />
+      <Register />
     </div>
   );
 }
