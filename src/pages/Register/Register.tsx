@@ -3,7 +3,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import React, { ReactElement, useState } from 'react';
 import { auth, db, storage } from '../../firebase';
 import { doc, setDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Register.scss'
 
 export const Register: React.FC = (): ReactElement => {
@@ -91,7 +91,7 @@ export const Register: React.FC = (): ReactElement => {
                     <button>Sign Up</button>
                     {error && <span>Something went wrong!</span>}
                 </form>
-                <p>You do have an account already? <a href="#"> Login </a></p>
+                <p>You do have an account already? <Link to="/login"> Login </Link></p>
             </div>
         </div>
     )
