@@ -3,11 +3,13 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import React, { ReactElement, useState } from 'react';
 import { auth, db, storage } from '../../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import './Register.scss'
 
 export const Register: React.FC = (): ReactElement => {
 
-    const [ error, setError ] = useState(false);
+    const [ error, setError ]   = useState(false);
+    const navigate              = useNavigate();
 
     // FIXME: Add the real event and state to each input
     const handleSubmit = async (e: any /*React.SyntheticEvent */): Promise<void> => {
@@ -63,6 +65,7 @@ export const Register: React.FC = (): ReactElement => {
                         });
 
                         await setDoc(doc(db, "userChats", response.user.uid), {});
+                        navigate("/");
                     });
                 }
             );
