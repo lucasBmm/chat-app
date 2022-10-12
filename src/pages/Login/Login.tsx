@@ -18,13 +18,14 @@ export const Login: React.FC = (): ReactElement => {
         const password    = e.target[1].value;
 
         try {
-            signInWithEmailAndPassword(auth, email, password).then(() => navigate("/")).catch((error: AuthError) => {
+            signInWithEmailAndPassword(auth, email, password).catch((error: AuthError) => {
                 console.log(error.code)
                 setError({
                     hasError: true,
                     errorMessage: error.code.replace("auth/", "")
                 });
             })
+            navigate("/");
         } catch {
             console.log("An error has ocurred")
         }
