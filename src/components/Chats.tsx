@@ -1,4 +1,4 @@
-import { onSnapshot, doc } from 'firebase/firestore';
+import { onSnapshot, doc, DocumentData } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { useEffect, useContext } from 'react';
 import { db } from './../firebase';
@@ -7,7 +7,7 @@ import { Unsubscribe } from 'firebase/auth';
 
 export const Chats: React.FC = (): JSX.Element => {
 
-    const [ chats, setChats ] = useState([]);
+    const [ chats, setChats ] = useState<any[]>([]);
 
     const currentUser = useContext(AuthContext);
 
@@ -18,7 +18,10 @@ export const Chats: React.FC = (): JSX.Element => {
             console.log("get chats")
             if (!currentUser) return;
             unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-                console.log( doc.data())
+                if (doc) {
+                    setChats(prev => [doc.data()]);
+                    console.log(chats)
+                }
             })
 
             return () => {
@@ -26,39 +29,24 @@ export const Chats: React.FC = (): JSX.Element => {
             }
         };
         
-        console.log(currentUser)
+        
         getChats();
 
     }, [currentUser?.uid])
 
-    console.log(Object.entries(chats));
-
     return (
-        <>
-            <div className="user-chat">
-                <img src="/images/userImage.jpg" alt="" />
-                <div className="user-chat-info">
-                    <span>
-                        Jane
-                    </span>
+        <div className='chats'>
+            {Object.entries(chats)?.map((chat: any) => (
+                <div className="user-chat" key={chat[0]}>
+                    <img src={chat[1]?.userInfo?.photoURL} alt="" />
+                    <div className="user-chat-info">
+                        <span>
+                            {chat[1]?.userInfo?.displayName}
+                        </span>
+                        <p>{chat[1]?.userInfo?.lastMessage}</p>
+                    </div>
                 </div>
-            </div>
-            <div className="user-chat">
-                <img src="/images/userImage.jpg" alt="" />
-                <div className="user-chat-info">
-                    <span>
-                        Jane
-                    </span>
-                </div>
-            </div>
-            <div className="user-chat">
-                <img src="/images/userImage.jpg" alt="" />
-                <div className="user-chat-info">
-                    <span>
-                        Jane
-                    </span>
-                </div>
-            </div>
-        </>
+            ))}
+        </div>
     )
 }
