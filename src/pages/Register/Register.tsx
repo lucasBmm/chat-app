@@ -1,14 +1,24 @@
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { AuthErrorCodes, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import React, { ReactElement, useState } from 'react';
 import { auth, db, storage } from '../../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate, Link } from 'react-router-dom';
 import './Register.scss'
+import { authErrors } from './../../models/error';
+
+export interface Error {
+    hasError: true | false,
+    errorMessage: string
+}
+
+export interface AuthError {
+    code: string
+}
 
 export const Register: React.FC = (): ReactElement => {
 
-    const [ error, setError ]   = useState(false);
+    const [ error, setError ]   = useState<Error>();
     const navigate              = useNavigate();
 
     // FIXME: Add the real event and state to each input
@@ -20,7 +30,15 @@ export const Register: React.FC = (): ReactElement => {
         const file        = e.target[3].files[0];
 
         try {
-            const response =  await createUserWithEmailAndPassword(auth, email, password);
+            const response =  await createUserWithEmailAndPassword(auth, email, password).then().catch((error: AuthError) => {
+                console.log(error.code)
+                setError({
+                    hasError: true,
+                    errorMessage: error.code.replace("auth/", "")
+                })
+            });
+
+            if (!response) return;
 
             const storageRef = ref(storage, displayName);
 
@@ -44,10 +62,14 @@ export const Register: React.FC = (): ReactElement => {
                 },
                 (error) => {
                     // Handle unsuccessful uploads
-                    setError(true);
+                    setError({
+                        hasError: true,
+                        errorMessage: error.code
+                    });
                     console.log(error)
                 },
                 () => {
+                    if (response?.user) return;
                     // Handle successful uploads on complete
                     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
@@ -70,7 +92,7 @@ export const Register: React.FC = (): ReactElement => {
                 }
             );
         } catch {
-            setError(true);
+            console.error(error);
         }
     }
 
@@ -89,7 +111,7 @@ export const Register: React.FC = (): ReactElement => {
                     </label>
                     <input style={{display: 'none'}} type="file" id="file" placeholder='User Image' />
                     <button>Sign Up</button>
-                    {error && <span>Something went wrong!</span>}
+                    {error?.hasError && <span style={{color: 'red'}}>{authErrors[error.errorMessage]}</span>}
                 </form>
                 <p>You do have an account already? <Link to="/login"> Login </Link></p>
             </div>

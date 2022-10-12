@@ -1,12 +1,14 @@
 import React, { ReactElement, useState } from 'react';
 import './Login.scss'
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { AuthError, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { Link } from 'react-router-dom';
+import { Error } from '../Register/Register';
+import { authErrors } from '../../models/error';
 
 export const Login: React.FC = (): ReactElement => {
-    const [ error, setError ]   = useState(false);
+    const [ error, setError ]   = useState<Error>();
     const navigate              = useNavigate();
 
     // FIXME: Add the real event and state to each input
@@ -16,11 +18,15 @@ export const Login: React.FC = (): ReactElement => {
         const password    = e.target[1].value;
 
         try {
-            signInWithEmailAndPassword(auth, email, password);
-            navigate("/");
-
+            signInWithEmailAndPassword(auth, email, password).then(() => navigate("/")).catch((error: AuthError) => {
+                console.log(error.code)
+                setError({
+                    hasError: true,
+                    errorMessage: error.code.replace("auth/", "")
+                });
+            })
         } catch {
-            setError(true);
+            console.log("An error has ocurred")
         }
     }
     return (
@@ -32,7 +38,7 @@ export const Login: React.FC = (): ReactElement => {
                     <input type="email"     placeholder='Email'         />
                     <input type="password"  placeholder='Password'      />
                     <button>Sign in</button>
-                    {error && <span>Something went wrong!</span>}
+                    {error?.hasError && <span className='error-message'>{authErrors[error.errorMessage]}</span>}
                 </form>
                 <p>You don't have an account already? <Link to="/register"> Register </Link></p>
             </div>
