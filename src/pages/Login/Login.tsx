@@ -36,7 +36,7 @@ export const Login: React.FC = (): ReactElement => {
                 <span className="logo">Chat App</span>
                 <span className="title">Login</span>
                 <form onSubmit={handleSubmit}>
-                    <input type="email"     placeholder='Email'         value={"lucas@email.com"}/>
+                    <input type="email"     placeholder='Email'         />
                     <input type="password"  placeholder='Password'      value={"Lua12345"} />
                     <button>Sign in</button>
                     {error?.hasError && <span className='error-message'>{authErrors[error.errorMessage]}</span>}

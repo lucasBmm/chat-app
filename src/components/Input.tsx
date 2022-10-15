@@ -76,7 +76,7 @@ export const Input: React.FC = (): JSX.Element => {
                 <label htmlFor="file">
                     <img src='/images/img.png' />
                 </label>
-                <button onClick={handleSend}>Send</button>
+                <button onClick={handleSend} type="submit">Send</button>
             </div>
         </div>
     )

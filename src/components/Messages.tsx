@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { ChatContext } from '../context/ChatContext';
 import { Message } from './Message';
 import { useState, useEffect } from 'react';
@@ -8,21 +8,22 @@ import { db } from './../firebase';
 export const Messages: React.FC = (): JSX.Element => {
     const [ messages, setMessages ] = useState<any[]>([]);
     const { data } = useContext(ChatContext);
-    console.log(data)
 
     useEffect(() => {
         console.log("Chamou o useEffect");
-        console.log(data)
+        console.log(data);
+
         if (data?.chatId) {
-            const unSub = onSnapshot(doc(db, "chats", data?.chatId), (doc) => {
-                doc.exists() && setMessages([doc?.data()?.messages])
+            const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
+                doc.exists() && setMessages(doc.data().messages);
             });
+        
             return () => {
                 unSub();
-            }
+            };
         }
 
-    },[data.chatId])
+    }, [data.chatId]);
 
     return (
         <div className="messages">
