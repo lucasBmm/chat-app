@@ -4,12 +4,25 @@ import { useNavigate } from 'react-router-dom';
 import { AuthError, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { Link } from 'react-router-dom';
-import { Error } from '../Register/Register';
+import { Error, ILogin } from '../../models/models';
 import { authErrors } from '../../models/error';
 
+const LOGIN_INITIAL_VALUE: ILogin = {
+    displayName: "",
+    email: "",
+    password: "",
+    userImage: null,
+}
+
 export const Login: React.FC = (): ReactElement => {
+
     const [ error, setError ]   = useState<Error>();
     const navigate              = useNavigate();
+    const [ login, setLogin ]   = useState<ILogin>(LOGIN_INITIAL_VALUE);
+
+    const handleChange = (e: any) => {
+        setLogin({...login, [e.target.name]: e.target.value})
+    }
 
     // FIXME: Add the real event and state to each input
     const handleSubmit = async (e: any /*React.SyntheticEvent */): Promise<void> => {
@@ -37,7 +50,7 @@ export const Login: React.FC = (): ReactElement => {
                 <span className="title">Login</span>
                 <form onSubmit={handleSubmit}>
                     <input type="email"     placeholder='Email'         />
-                    <input type="password"  placeholder='Password'      />
+                    <input type="password"  placeholder='Password'      value={"Lua12345"} />
                     <button>Sign in</button>
                     {error?.hasError && <span className='error-message'>{authErrors[error.errorMessage]}</span>}
                 </form>
