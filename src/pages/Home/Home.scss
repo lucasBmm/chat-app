@@ -1,3 +1,5 @@
+$dark-blue: #282A36;
+
 @mixin mobile {
     @media screen and (max-width: 480px) {
         @content 

@@ -4,23 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { Link } from 'react-router-dom';
-import { Error, ILogin } from '../../models/models';
+import { ILogin } from '../../models/models';
 import { authErrors } from '../../models/error';
+import { useAlert } from 'react-alert';
 
 const LOGIN_INITIAL_VALUE: ILogin = {
     email: "",
     password: "",
 }
 
-const ERROR_INITAL_VALUE: Error = { 
-    hasError: false, 
-    errorMessage: ""
-}
-
 export const Login: React.FC = (): ReactElement => {
-    const [ error, setError ]   = useState<Error>(ERROR_INITAL_VALUE);
     const navigate              = useNavigate();
     const [ login, setLogin ]   = useState<ILogin>(LOGIN_INITIAL_VALUE);
+    const alert = useAlert();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLogin({...login, [e.target.name]: e.target.value})
@@ -32,19 +28,18 @@ export const Login: React.FC = (): ReactElement => {
         try {
             await signInWithEmailAndPassword(auth, login.email, login.password)
             navigate("/");
-        } catch (error: any) {
-            setError({
-                hasError: true,
-                errorMessage: error?.code?.replace("auth/", "")
-            });
+        } catch (authError: any) {
+            alert.error(authErrors[authError?.code?.replace("auth/", "")]);
         }
     }
 
     return (
         <div className="form-container">
             <div className='form-wrapper'>
-                <span className="logo">Chat App</span>
-                <span className="title">Login</span>
+                <div className="top-text">
+                    <span className="logo">Welcome Back!</span>
+                    <span className="title">Sign in your account!</span>
+                </div>
                 <form onSubmit={handleSubmit}>
                     <input 
                         type="email"     
@@ -61,11 +56,11 @@ export const Login: React.FC = (): ReactElement => {
                         onChange={e => handleChange(e)} 
                         value={login.password} 
                     />
+                    <Link to="#" className='link'>Forgot password?</Link>
 
                     <button type='submit'>Sign in</button>
-                    {error?.hasError && <span className='error-message'>{authErrors[error.errorMessage]}</span>}
                 </form>
-                <p>You don't have an account already? <Link to="/register"> Register </Link></p>
+                <p>Don't have an account already? <Link to="/register" className='link'>Sign Up</Link></p>
             </div>
         </div>
     )
