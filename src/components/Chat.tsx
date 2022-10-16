@@ -7,8 +7,6 @@ import { DefaultChat } from './default-chat';
 export const Chat: React.FC = (): JSX.Element => {
     const { data } = useContext(ChatContext);
 
-    console.log("Conversa está aberta?")
-    console.log(data.chatId)
     return (
         <div className='chat'>
             {data?.chatId && 

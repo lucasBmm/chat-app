@@ -25,7 +25,6 @@ export const Search: React.FC = (): JSX.Element => {
                 setUser(doc.data());
             });
         } catch (err) {
-            console.log()
             setErr(true);
         }
     }

@@ -12,13 +12,9 @@ function App(): JSX.Element {
   const user = useContext(AuthContext);
 
   const ProctectedRoute = ({ children }: any) => {
-    console.log("Verificando se há usuário")
     if (!user) {
-      console.log("O usuário não está logado")
       return <Navigate to="/login" />
     } else {
-      console.log("O usuário está logado: ")
-      console.log(user)
       return children;
     }
   }
