@@ -48,21 +48,21 @@ export const Search: React.FC = (): JSX.Element => {
 
                    //create user chats
                     await setDoc(doc(db, "userChats", currentUser.uid), {
-                        [combinedId + ".userInfo"]: {
+                        ["userInfo"]: {
                         uid: user.uid,
                         displayName: user.displayName,
                         photoURL: user.photoURL,
                         },
-                        [combinedId + ".date"]: serverTimestamp(),
+                        ["date"]: serverTimestamp(),
                     });
             
                     await setDoc(doc(db, "userChats", user.uid), {
-                        [combinedId + ".userInfo"]: {
+                        ["userInfo"]: {
                         uid: currentUser.uid,
                         displayName: currentUser.displayName,
                         photoURL: currentUser.photoURL,
                         },
-                        [combinedId + ".date"]: serverTimestamp(),
+                        ["date"]: serverTimestamp(),
                     });
                 }
             } catch (err) {

@@ -7,11 +7,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import './Register.scss'
 import { authErrors } from './../../models/error';
 
-export interface Error {
-    hasError: true | false,
-    errorMessage: string
-}
-
 export interface AuthError {
     code: string
 }

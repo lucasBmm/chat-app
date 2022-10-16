@@ -1,57 +1,68 @@
 import React, { ReactElement, useState } from 'react';
 import './Login.scss'
 import { useNavigate } from 'react-router-dom';
-import { AuthError, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { Link } from 'react-router-dom';
 import { Error, ILogin } from '../../models/models';
 import { authErrors } from '../../models/error';
 
 const LOGIN_INITIAL_VALUE: ILogin = {
-    displayName: "",
     email: "",
     password: "",
-    userImage: null,
+}
+
+const ERROR_INITAL_VALUE: Error = { 
+    hasError: false, 
+    errorMessage: ""
 }
 
 export const Login: React.FC = (): ReactElement => {
-
-    const [ error, setError ]   = useState<Error>();
+    const [ error, setError ]   = useState<Error>(ERROR_INITAL_VALUE);
     const navigate              = useNavigate();
     const [ login, setLogin ]   = useState<ILogin>(LOGIN_INITIAL_VALUE);
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLogin({...login, [e.target.name]: e.target.value})
     }
 
-    // FIXME: Add the real event and state to each input
-    const handleSubmit = async (e: any /*React.SyntheticEvent */): Promise<void> => {
+    const handleSubmit = async (e: React.SyntheticEvent): Promise<void> => {
         e.preventDefault();
-        const email       = e.target[0].value;
-        const password    = e.target[1].value;
 
         try {
-            signInWithEmailAndPassword(auth, email, password).catch((error: AuthError) => {
-                console.log(error.code)
-                setError({
-                    hasError: true,
-                    errorMessage: error.code.replace("auth/", "")
-                });
-            })
+            await signInWithEmailAndPassword(auth, login.email, login.password)
             navigate("/");
-        } catch {
-            console.log("An error has ocurred")
+        } catch (error: any) {
+            setError({
+                hasError: true,
+                errorMessage: error?.code?.replace("auth/", "")
+            });
         }
     }
+
     return (
         <div className="form-container">
             <div className='form-wrapper'>
                 <span className="logo">Chat App</span>
                 <span className="title">Login</span>
                 <form onSubmit={handleSubmit}>
-                    <input type="email"     placeholder='Email'         />
-                    <input type="password"  placeholder='Password'      value={"Lua12345"} />
-                    <button>Sign in</button>
+                    <input 
+                        type="email"     
+                        placeholder='Email'
+                        name="email"
+                        onChange={e => handleChange(e)}
+                        value={login.email}
+                    />
+
+                    <input 
+                        type="password"  
+                        placeholder='Password'  
+                        name="password" 
+                        onChange={e => handleChange(e)} 
+                        value={login.password} 
+                    />
+
+                    <button type='submit'>Sign in</button>
                     {error?.hasError && <span className='error-message'>{authErrors[error.errorMessage]}</span>}
                 </form>
                 <p>You don't have an account already? <Link to="/register"> Register </Link></p>

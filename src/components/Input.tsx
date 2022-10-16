@@ -1,8 +1,16 @@
 import React from 'react';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { ChatContext } from '../context/ChatContext';
+import { useState } from 'react';
+import { updateDoc, doc, arrayUnion, Timestamp, serverTimestamp, setDoc } from 'firebase/firestore';
+import { db, storage } from './../firebase';
+import { v4 as uuid } from 'uuid';
+import { ref } from 'firebase/storage';
+import { uploadBytesResumable } from 'firebase/storage';
+import { getDownloadURL } from 'firebase/storage';
 
 export const Input: React.FC = (): JSX.Element => {
-<<<<<<< Updated upstream
-=======
     const [ text,   setText ] = useState("");
     const [ file,   setFile  ] = useState<any>();
 
@@ -57,17 +65,16 @@ export const Input: React.FC = (): JSX.Element => {
       setFile(null);
     }
 
->>>>>>> Stashed changes
     return (
         <div className='input'>
-            <input type="text" placeholder='Type something...' />
+            <input type="text" placeholder='Type something...' value={text} onChange={(e) => setText(e.target.value)} />
             <div className="send">
                 <img src="/images/attach.png" alt="" />
-                <input type="file" style={{display: 'none'}} id="file" />
+                <input type="file" style={{display: 'none'}} id="file" onChange={(e) => setFile(e.target?.files)}/>
                 <label htmlFor="file">
                     <img src='/images/img.png' />
                 </label>
-                <button>Send</button>
+                <button onClick={handleSend}>Send</button>
             </div>
         </div>
     )
