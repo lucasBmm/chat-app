@@ -7,7 +7,7 @@ export interface IRegister{
     displayName: string,
     email: string,
     password: string,
-    userImage: File | null
+    userImage: any
 }
 
 export interface ILogin {

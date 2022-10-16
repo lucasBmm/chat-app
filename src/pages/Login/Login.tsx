@@ -34,7 +34,7 @@ export const Login: React.FC = (): ReactElement => {
     }
 
     return (
-        <div className="form-container">
+        <div className="form-container login">
             <div className='form-wrapper'>
                 <div className="top-text">
                     <span className="logo">Welcome Back!</span>
@@ -47,6 +47,7 @@ export const Login: React.FC = (): ReactElement => {
                         name="email"
                         onChange={e => handleChange(e)}
                         value={login.email}
+                        autoComplete="off"
                     />
 
                     <input 

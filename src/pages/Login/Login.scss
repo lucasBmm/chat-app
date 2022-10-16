@@ -29,7 +29,7 @@ $purple: #6C3483;
 
     .form-wrapper {
         background-color: #181A20;
-        height: 60%;
+        height: 70%;
         border-radius: 10px;
         display: flex;
         flex-direction: column;
@@ -47,10 +47,10 @@ $purple: #6C3483;
             display: flex;
             flex-direction: column;
             text-align: center;
-            margin-bottom: 10%;
+            margin-bottom: 24%;
 
             @include mobile() {
-                margin-bottom: 20%;
+                margin-bottom: 32%;
             }
             
             .logo {
@@ -58,8 +58,6 @@ $purple: #6C3483;
                 font-size: 34px;
                 margin-bottom: 10px;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-                
             }
     
             .title {
@@ -89,6 +87,7 @@ $purple: #6C3483;
                 outline: none;
 
                 @include mobile() {
+                    border-radius: 15px;
                     padding: 20px;
                     border: none;
                 }
@@ -119,6 +118,7 @@ $purple: #6C3483;
                 @include mobile() {
                     margin-top: 20%;
                     padding: 20px;
+                    border-radius: 15px;
                 }
 
                 &:hover {

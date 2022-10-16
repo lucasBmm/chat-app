@@ -24,24 +24,41 @@
     justify-content: center;
 
     .form-wrapper {
-        background-color: white;
-        padding: 20px 60px;
         border-radius: 10px;
         display: flex;
+        height: 70% !important;
+        width: 30%;
+        padding: 0 30px;
         flex-direction: column;
         gap: 10px;
         align-items: center;
         position: relative;
 
-        .logo {
-            color: #5d5b8d;
-            font-weight: bold;
-            font-size: 24px;
+        @include tablet() {
+            height: 80% !important;
+            width: 60%;
         }
 
-        .title {
-            color: #5d5b8d;
-            font-size: 14px
+        .top-text {
+
+            &.register {
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+                margin-bottom: 5%;
+                
+                .logo {
+                    color: white;
+                    font-size: 34px;
+                    margin-bottom: 10px;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+        
+                .title {
+                    color: grey;
+                    font-size: 14px;
+                }
+            }
         }
 
         form {
@@ -53,9 +70,15 @@
                 padding: 20px;
                 border: none;
                 border-bottom: solid 1px #a7bcff;
+                border-radius: 15px;
 
                 &::placeholder {
                     color: rgb(175, 175, 175);
+                }
+
+                @include mobile() {
+                    padding: 20px;
+                    border-radius: 15px;
                 }
             }
 
@@ -77,13 +100,21 @@
                 cursor: pointer;
 
                 img {
-                    width: 32px;
+                    width: 52px;
                 }
-            }
 
-            .error-message {
-                color: red;
-                position: absolute;
+                .user-image-preview {
+                    transition: 0.5s;
+                    background-color: #ddddf7;
+                    height: 50px;
+                    width: 50px;
+                    border-radius: 50%;
+                    object-fit: cover;
+
+                    &:hover {
+                        transform: scale(3);
+                    }
+                }
             }
         }
 
