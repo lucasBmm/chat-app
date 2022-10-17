@@ -31,7 +31,7 @@ export const Message: React.FC<Props> = ({message}: Props): JSX.Element => {
                 <span>just now</span>
             </div>
             <div className="message-content">
-                <p>{message?.text}</p>
+                {message?.text && <p>{message?.text}</p>}
                 { message?.img && <img src={message.img} />}
             </div>
         </div>

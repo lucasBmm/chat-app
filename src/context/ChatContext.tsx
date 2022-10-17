@@ -26,6 +26,9 @@ export const ChatContextProvider = ({ children }: PropsWithChildren): JSX.Elemen
                         : action.payload.uid + currentUser.uid
                 };
 
+            case "CLOSE_CHAT":
+                return { state: INITIAL_STATE};
+
             default:
                 return state;
         }

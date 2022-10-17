@@ -89,7 +89,6 @@ export const Search: React.FC = (): JSX.Element => {
                     <img src={user.photoURL} alt="" />
                     <div className="user-chat-info">
                         <span>{ user.displayName }</span>
-                        <p>Hello</p>
                     </div>
                 </div>
             )}
