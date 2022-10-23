@@ -18,6 +18,7 @@ export const Chat: React.FC = (): JSX.Element => {
                 <div className="chat-info">
                     <div className="chat-back">
                         <button className='back-btn' onClick={handleClick}> &#8592; </button>
+                        <img src={data?.user.photoURL} alt="user image" className='user-image' />
                         <span>{ data?.user?.displayName }</span>
                     </div>
                     <div className="chat-icons">

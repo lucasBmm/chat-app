@@ -20,12 +20,12 @@ export const Input: React.FC = (): JSX.Element => {
     const [ text,   setText   ] = useState("");
     const [ file,   setFile   ] = useState<any>();
     const [ emoji,  setEmoji  ] = useState(false);
-    const alert = useAlert();
 
     const currentUser = useContext(AuthContext);
     const { data } = useContext(ChatContext);
 
-    const handleSend = async () => {
+    const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
       if (file) {
           const storageRef = ref(storage, uuid());
 
@@ -53,20 +53,20 @@ export const Input: React.FC = (): JSX.Element => {
             })
         })
       }
-
+      
       if (!currentUser) return;
       await updateDoc(doc(db, "userChats", currentUser?.uid), {
-        ["lastMessage"]: {
+        [data.chatId + ".lastMessage"]: {
           text
         },
-        ["date"]: serverTimestamp()
+        [data.chatId + ".date"]: serverTimestamp()
       });
 
       await updateDoc(doc(db, "userChats", data?.user?.uid), {
-        ["lastMessage"]: {
+        [data.chatId + ".lastMessage"]: {
           text
         },
-        ["date"]: serverTimestamp()
+        [data.chatId + ".date"]: serverTimestamp()
       });
 
       setText("");
@@ -78,11 +78,12 @@ export const Input: React.FC = (): JSX.Element => {
     }
 
     return (
+      <form onSubmit={e => handleSend(e)}>
         <div className='input'>
-          <button className='emoji-btn' onClick={() => setEmoji(!emoji)}> <FontAwesomeIcon icon={icon} className="emoji-icon" /> </button>
+          <button className='emoji-btn' type="button" onClick={() => setEmoji(!emoji)}> <FontAwesomeIcon icon={icon} className="emoji-icon" /> </button>
             {emoji &&
               <div className="emoji-container" onClick={() => setEmoji(false)}>
-                <EmojiPicker theme={Theme.DARK} onEmojiClick={onEmojiClick}  autoFocusSearch={false} /> 
+                <EmojiPicker theme={Theme.DARK} onEmojiClick={onEmojiClick}  autoFocusSearch={false} emojiStyle={"native"}/> 
               </div> 
             }
             <input type="text" placeholder='Type something...' value={text} onChange={(e) => setText(e.target.value)} />
@@ -91,13 +92,14 @@ export const Input: React.FC = (): JSX.Element => {
                 <label htmlFor="file">
                     <img src='/images/img.png' />
                 </label>
-                <button 
-                  onClick={handleSend} 
+                <button  
                   style={{display: text ? 'block' : 'none'}}
+                  type="submit"
                 >
                   Send
                 </button>
             </div>
         </div>
+      </form>
     )
 }

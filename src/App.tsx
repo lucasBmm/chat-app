@@ -6,10 +6,12 @@ import { Home } from './pages/Home/Home';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthContext } from './context/AuthContext';
 import { PropsWithChildren } from 'react';
+import { useCookies } from 'react-cookie';
 
 function App(): JSX.Element {
 
-  const user = useContext(AuthContext);
+  const   user      = useContext(AuthContext);
+  const [ cookies ] = useCookies(["user"]);
 
   const ProctectedRoute = ({ children }: any) => {
     if (!user) {

@@ -12,6 +12,7 @@ import "./Register.scss";
 import { authErrors } from "./../../models/error";
 import { useAlert } from "react-alert";
 import { IRegister } from "../../models/models";
+import { Loading } from "../../components/Loading";
 
 const REGISTER_INITIAL_VALUE: IRegister = {
   displayName: "",
@@ -37,7 +38,9 @@ export const Register: React.FC = (): ReactElement => {
 
       const date = new Date().getTime();
 
-      const storageRef = ref(storage, `${displayName + date}`);
+      const storageRef = ref(storage, `/users/${res.user.uid}/${displayName + date}`);
+
+      console.log(storageRef)
 
       await uploadBytesResumable(storageRef, userImage).then(() => {
         getDownloadURL(storageRef).then(async (downloadURL) => {
@@ -61,12 +64,16 @@ export const Register: React.FC = (): ReactElement => {
             navigate("/");
 
           } catch (err: any) {
+            console.log("Erro ao fazer upload ad foto");
+            console.log(err)
             alert.error(authErrors[err?.code?.replace("auth/", "")]);
             setLoading(false);
           }
         });
       });
     } catch (err: any) {
+      console.log("erro ao tentar registro")
+      console.log(err)
       alert.error(authErrors[err?.code?.replace("auth/", "")]);
       setLoading(false);
     }
@@ -94,55 +101,57 @@ export const Register: React.FC = (): ReactElement => {
     setRegister({...register, [e.target.name]: e.target.value})
   }
 
-
-  return (
-    <div className="form-container register">
-      <div className="form-wrapper">
-        <div className="top-text register">
-          <span className="logo">Create New Account</span>
-          <span className="title">Please fill the form!</span>
+  if (loading) {
+    return <Loading />
+  } else {
+    return (
+      <div className="form-container register">
+        <div className="form-wrapper">
+          <div className="top-text register">
+            <span className="logo">Create New Account</span>
+            <span className="title">Please fill the form!</span>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <input 
+              required type="text" placeholder="Display Name" 
+              value={register.displayName}  name="displayName"  
+              onChange={e => handleChange(e)}
+            />
+            <input 
+              required type="email"   placeholder="Email"        
+              value={register.email}  name="email"        
+              onChange={e => handleChange(e)}
+            />
+            <input 
+              required type="password"  
+              placeholder="Password" value={register.password}     
+              name="password" onChange={e => handleChange(e)}
+            />
+            <input required style={{ display: "none" }} type="file" id="file"  onChange={(e) => handleFileChange(e)}/>
+            <label htmlFor="file">
+              { !register.userImage && 
+                <>
+                  <img src="images/addAvatar.png" alt="" />
+                  <span>Add an avatar</span>
+                </>
+              }
+              {preview && 
+                <>
+                  <img src={preview} className="user-image-preview" />
+                  <span>This is how your avatar will look</span>
+                </>
+              }
+            </label>
+            <button disabled={loading}>Sign up</button>
+          </form>
+          <p>
+            You do have an account?{" "}
+            <Link to="/login" className="link">
+              Sign In
+            </Link>
+          </p>
         </div>
-        <form onSubmit={handleSubmit}>
-          <input 
-            required type="text" placeholder="Display Name" 
-            value={register.displayName}  name="displayName"  
-            onChange={e => handleChange(e)}
-          />
-          <input 
-            required type="email"   placeholder="Email"        
-            value={register.email}  name="email"        
-            onChange={e => handleChange(e)}
-          />
-          <input 
-            required type="password"  
-            placeholder="Password" value={register.password}     
-            name="password" onChange={e => handleChange(e)}
-          />
-          <input required style={{ display: "none" }} type="file" id="file"  onChange={(e) => handleFileChange(e)}/>
-          <label htmlFor="file">
-            { !register.userImage && 
-              <>
-                <img src="images/addAvatar.png" alt="" />
-                <span>Add an avatar</span>
-              </>
-            }
-            {preview && 
-              <>
-                <img src={preview} className="user-image-preview" />
-                <span>This is how your avatar will look</span>
-              </>
-            }
-          </label>
-          <button disabled={loading}>Sign up</button>
-          {loading && "Uploading and compressing the image please wait..."}
-        </form>
-        <p>
-          You do have an account?{" "}
-          <Link to="/login" className="link">
-            Sign In
-          </Link>
-        </p>
       </div>
-    </div>
-  );
+    );
+  }
 };

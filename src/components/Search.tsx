@@ -3,16 +3,24 @@ import { collection, DocumentData, getDocs, query, where, setDoc, doc, updateDoc
 import { db } from '../firebase';
 import { User } from 'firebase/auth';
 import { AuthContext } from './../context/AuthContext';
+import { useAlert } from 'react-alert';
 
 export const Search: React.FC = (): JSX.Element => {
     const [ username, setUsername ] = useState<string>("");
     // FIXME: ADD CORRECT TYPES TO USER
     const [ user    , setUser     ] = useState<any>();
     const [ err     , setErr      ] = useState<boolean>(false);
+    const alert = useAlert();
+
 
     const currentUser = useContext(AuthContext);
 
     const handleSearch = async () => {
+        if (currentUser?.displayName == username) {
+            alert.error("You can't search yourself!");
+            return;
+        }
+
         const q = query(
             collection(db, "users"), 
             where("displayName", "==", username)
@@ -20,10 +28,18 @@ export const Search: React.FC = (): JSX.Element => {
 
         try {
             const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                if (!doc.data()) return;
-                setUser(doc.data());
-            });
+            if (querySnapshot.empty) {
+                setErr(true);
+                return;
+            } else {
+                querySnapshot.forEach((doc) => {
+                    if (!doc.data()) {
+                        setErr(true)
+                        return
+                    };
+                    setUser(doc.data());
+                });
+            }
         } catch (err) {
             setErr(true);
         }
@@ -45,30 +61,49 @@ export const Search: React.FC = (): JSX.Element => {
                      //create a chat in chats collection
                     await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
-                   //create user chats
-                    await setDoc(doc(db, "userChats", currentUser.uid), {
-                        ["userInfo"]: {
+                    const thisUserChats = await getDoc(doc(db, "userChats", currentUser.uid));
+                    const userChats = await getDoc(doc(db, "userChats", user.uid));
+
+                    let updateOrSet: Function;
+
+                    if (!thisUserChats.exists()) {
+                        await setDoc(doc(db, "userChats", currentUser.uid), {});
+                    }
+
+                    if (!userChats.exists()) {
+                        await setDoc(doc(db, "userChats", user.uid), {});
+                    }
+
+                    // if (userChats.exists()) {
+                    //     updateOrSet = updateDoc;
+                    // } else {
+                    //     updateOrSet = setDoc;
+                    // }
+
+                   // create user chats if
+                    await updateDoc(doc(db, "userChats", currentUser.uid), {
+                        [combinedId + ".userInfo"]: {
                         uid: user.uid,
                         displayName: user.displayName,
                         photoURL: user.photoURL,
                         },
-                        ["date"]: serverTimestamp(),
+                        [combinedId + ".date"]: serverTimestamp(),
                     });
             
-                    await setDoc(doc(db, "userChats", user.uid), {
-                        ["userInfo"]: {
+                    await updateDoc(doc(db, "userChats", user.uid), {
+                        [combinedId + ".userInfo"]: {
                         uid: currentUser.uid,
                         displayName: currentUser.displayName,
                         photoURL: currentUser.photoURL,
                         },
-                        ["date"]: serverTimestamp(),
+                        [combinedId + ".date"]: serverTimestamp(),
                     });
                 }
             } catch (err) {
-                console.error(err)
-                setUsername("");
-                setUser(null);
+                alert.error("Error")
             }
+            setUsername("");
+            setUser(null);
         }
     }
 
@@ -83,7 +118,7 @@ export const Search: React.FC = (): JSX.Element => {
                     value={username}
                 />
             </div>
-            {err && <span>User not found!</span>}
+            {err && <span style={{"color": "white"}}>User not found!</span>}
             {user && (
                 <div className="user-chat" onClick={handleSelect}>
                     <img src={user.photoURL} alt="" />

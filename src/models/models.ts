@@ -20,6 +20,19 @@ export interface IChat {
     user: IUser | null
 }
 
+export interface IChats {
+    date: {
+        seconds: number,
+        nanoseconds: number
+    },
+    userInfo: {
+        displayName: string,
+        uid: string,
+        photoURL: string
+    },
+    lastMessage?: any
+}
+
 export interface IUser {
     displayName: string,
     photoURL: string,

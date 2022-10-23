@@ -5,10 +5,11 @@ import { db } from './../firebase';
 import { AuthContext } from './../context/AuthContext';
 import { Unsubscribe } from 'firebase/auth';
 import { ChatContext } from '../context/ChatContext';
+import { IChats } from '../models/models';
 
 export const Chats: React.FC = (): JSX.Element => {
 
-    const [ chats, setChats ] = useState<any[]>([]);
+    const [ chats, setChats ] = useState<IChats[]>([]);
 
     const currentUser = useContext(AuthContext);
     const { dispatch } = useContext(ChatContext);
@@ -18,7 +19,8 @@ export const Chats: React.FC = (): JSX.Element => {
             if (!currentUser) return;
             let unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
                 if (doc) {
-                    setChats([doc.data()]);
+                    let data: IChats = doc.data() as IChats;
+                    setChats([data]);
                 }
             })
 
@@ -26,7 +28,6 @@ export const Chats: React.FC = (): JSX.Element => {
                 unsub();
             }
         };
-        
         
         currentUser?.uid && getChats();
 
@@ -38,17 +39,17 @@ export const Chats: React.FC = (): JSX.Element => {
 
     return (
         <div className='chats'>
-            {chats[0] && Object.entries(chats)?.sort((a, b )=> a[1].date = b[1].date)?.map((chat: any) => (
-                <div className="user-chat" key={chat[0]} onClick={() => handleSelect(chat[1]?.userInfo)}>
-                    <img src={chat[1]?.userInfo?.photoURL} alt="" />
-                    <div className="user-chat-info">
-                        <span>
-                            {chat[1]?.userInfo?.displayName}
-                        </span>
-                        <p>{chat[1]?.lastMessage?.text}</p>
-                    </div>
+            {chats[0] && Object.entries(chats[0])?.sort((a,b)=> b[1]?.date?.seconds - a[1]?.date?.seconds).map((chat) => (
+                <div className="user-chat" key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
+                    {/* {JSON.stringify(chat)} */}
+                <img src={chat[1]?.userInfo?.photoURL} alt="" />
+                <div className="user-chat-info">
+                    <span>{chat[1]?.userInfo?.displayName}</span>
+                    <p>{chat[1]?.lastMessage?.text}</p>
+                </div>
                 </div>
             ))}
+            
         </div>
     )
 }

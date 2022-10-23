@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from 'react';
 import './Login.scss'
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { browserLocalPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { Link } from 'react-router-dom';
 import { ILogin } from '../../models/models';
@@ -25,12 +25,15 @@ export const Login: React.FC = (): ReactElement => {
     const handleSubmit = async (e: React.SyntheticEvent): Promise<void> => {
         e.preventDefault();
 
-        try {
-            await signInWithEmailAndPassword(auth, login.email, login.password)
-            navigate("/");
-        } catch (authError: any) {
-            alert.error(authErrors[authError?.code?.replace("auth/", "")]);
-        }
+        setPersistence(auth, browserLocalPersistence).then(async () => {
+            try {
+                await signInWithEmailAndPassword(auth, login.email, login.password);
+                navigate("/");
+            } catch (authError: any) {
+                alert.error(authErrors[authError?.code?.replace("auth/", "")]);
+            }
+        });
+
     }
 
     return (

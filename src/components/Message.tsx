@@ -2,9 +2,19 @@ import React from 'react';
 import { useContext, useRef, useEffect } from 'react';
 import { ChatContext } from '../context/ChatContext';
 import { AuthContext } from './../context/AuthContext';
+import { Timestamp } from 'firebase/firestore';
 
 interface Props {
-    message: any
+    message: {
+        id: string,
+        text: string,
+        senderId: string,
+        date: {
+            seconds: number,
+            nanoseconds: number
+        },
+        img?: string
+    }
 }
 
 export const Message: React.FC<Props> = ({message}: Props): JSX.Element => {
@@ -17,6 +27,12 @@ export const Message: React.FC<Props> = ({message}: Props): JSX.Element => {
         ref.current?.scrollIntoView({behavior: "smooth"});
     }, [message])
 
+    const convertTime = (): string => {
+        let convertedDate = new Date(message.date.seconds*1000).toLocaleTimeString().substring(0, 5);
+
+        return convertedDate;
+    }
+
     return (
         <div
             ref={ref} 
@@ -28,7 +44,7 @@ export const Message: React.FC<Props> = ({message}: Props): JSX.Element => {
                         : data?.user?.photoURL
                     } 
                     />
-                <span>just now</span>
+                <span>{ convertTime() }</span>
             </div>
             <div className="message-content">
                 {message?.text && <p>{message?.text}</p>}

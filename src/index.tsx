@@ -5,6 +5,7 @@ import { AuthContextProvider } from './context/AuthContext';
 import { ChatContextProvider } from './context/ChatContext';
 import AlertTemplate from 'react-alert-template-oldschool-dark';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+import { CookiesProvider } from 'react-cookie';
 
 const options = {
   position: positions.TOP_LEFT,
@@ -21,11 +22,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <AuthContextProvider>
     <ChatContextProvider>
-      <React.StrictMode>
-        <AlertProvider template={AlertTemplate} {...options}>
-          <App />
-        </AlertProvider>
-      </React.StrictMode>
+      <CookiesProvider> 
+        <React.StrictMode>
+          <AlertProvider template={AlertTemplate} {...options}>
+            <App />
+          </AlertProvider>
+        </React.StrictMode>
+      </CookiesProvider>
     </ChatContextProvider>
   </AuthContextProvider>
 );
