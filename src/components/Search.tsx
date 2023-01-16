@@ -3,15 +3,23 @@ import { collection, DocumentData, getDocs, query, where, setDoc, doc, updateDoc
 import { db } from '../firebase';
 import { User } from 'firebase/auth';
 import { AuthContext } from './../context/AuthContext';
-import { useAlert } from 'react-alert';
+import { useAlert } from '@blaumaus/react-alert';
+import { ChatContext } from '../context/ChatContext';
+
+interface IUser {
+    displayName: string,
+    email: string,
+    photoURL: string,
+    uid: string
+}
 
 export const Search: React.FC = (): JSX.Element => {
     const [ username, setUsername ] = useState<string>("");
     // FIXME: ADD CORRECT TYPES TO USER
-    const [ user    , setUser     ] = useState<any>();
+    const [ user    , setUser     ] = useState<IUser | null>(null);
     const [ err     , setErr      ] = useState<boolean>(false);
     const alert = useAlert();
-
+    const { dispatch } = useContext(ChatContext);
 
     const currentUser = useContext(AuthContext);
 
@@ -21,6 +29,7 @@ export const Search: React.FC = (): JSX.Element => {
             return;
         }
 
+        console.log(username);
         const q = query(
             collection(db, "users"), 
             where("displayName", "==", username)
@@ -37,7 +46,7 @@ export const Search: React.FC = (): JSX.Element => {
                         setErr(true)
                         return
                     };
-                    setUser(doc.data());
+                    setUser(doc.data() as IUser);
                 });
             }
         } catch (err) {
@@ -64,8 +73,6 @@ export const Search: React.FC = (): JSX.Element => {
                     const thisUserChats = await getDoc(doc(db, "userChats", currentUser.uid));
                     const userChats = await getDoc(doc(db, "userChats", user.uid));
 
-                    let updateOrSet: Function;
-
                     if (!thisUserChats.exists()) {
                         await setDoc(doc(db, "userChats", currentUser.uid), {});
                     }
@@ -74,13 +81,6 @@ export const Search: React.FC = (): JSX.Element => {
                         await setDoc(doc(db, "userChats", user.uid), {});
                     }
 
-                    // if (userChats.exists()) {
-                    //     updateOrSet = updateDoc;
-                    // } else {
-                    //     updateOrSet = setDoc;
-                    // }
-
-                   // create user chats if
                     await updateDoc(doc(db, "userChats", currentUser.uid), {
                         [combinedId + ".userInfo"]: {
                         uid: user.uid,
@@ -98,6 +98,8 @@ export const Search: React.FC = (): JSX.Element => {
                         },
                         [combinedId + ".date"]: serverTimestamp(),
                     });
+
+                    dispatch({type: "CHANGE_USER", payload: user});
                 }
             } catch (err) {
                 alert.error("Error")

@@ -9,10 +9,9 @@ import { v4 as uuid } from 'uuid';
 import { ref } from 'firebase/storage';
 import { uploadBytesResumable } from 'firebase/storage';
 import { getDownloadURL } from 'firebase/storage';
-import { useAlert } from 'react-alert';
 import EmojiPicker from 'emoji-picker-react';
 import { Theme } from 'emoji-picker-react';
-import { EmojiClickData, EmojiStyle } from 'emoji-picker-react/dist/types/exposedTypes';
+import { EmojiClickData } from 'emoji-picker-react/dist/types/exposedTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFaceLaugh as icon } from '@fortawesome/free-solid-svg-icons';
 
@@ -83,7 +82,7 @@ export const Input: React.FC = (): JSX.Element => {
           <button className='emoji-btn' type="button" onClick={() => setEmoji(!emoji)}> <FontAwesomeIcon icon={icon} className="emoji-icon" /> </button>
             {emoji &&
               <div className="emoji-container" onClick={() => setEmoji(false)}>
-                <EmojiPicker theme={Theme.DARK} onEmojiClick={onEmojiClick}  autoFocusSearch={false} emojiStyle={"native"}/> 
+                <EmojiPicker theme={Theme.DARK} onEmojiClick={onEmojiClick}  autoFocusSearch={false} /> 
               </div> 
             }
             <input type="text" placeholder='Type something...' value={text} onChange={(e) => setText(e.target.value)} />

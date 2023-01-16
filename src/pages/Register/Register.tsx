@@ -10,9 +10,10 @@ import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 import "./Register.scss";
 import { authErrors } from "./../../models/error";
-import { useAlert } from "react-alert";
+import { useAlert } from "@blaumaus/react-alert";
 import { IRegister } from "../../models/models";
 import { Loading } from "../../components/Loading";
+import image from './default-user-img.webp';
 
 const REGISTER_INITIAL_VALUE: IRegister = {
   displayName: "",
@@ -31,26 +32,36 @@ export const Register: React.FC = (): ReactElement => {
   const handleSubmit = async (e: any) => {
     setLoading(true);
     e.preventDefault();
-    const { displayName, email, password, userImage } = register;
+    let { displayName, email, password, userImage } = register;
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
+
+      console.log(userImage)
+
+      if (!userImage) userImage = image;
 
       const date = new Date().getTime();
 
       const storageRef = ref(storage, `/users/${res.user.uid}/${displayName + date}`);
 
-      console.log(storageRef)
-
       await uploadBytesResumable(storageRef, userImage).then(() => {
         getDownloadURL(storageRef).then(async (downloadURL) => {
+          
           try {
             //Update profile
             await updateProfile(res.user, {
               displayName,
               photoURL: downloadURL,
             });
+          } catch (err: any) {
+            console.log("Erro ao fazer update do perfil");
+            console.log(err)
+            alert.error(authErrors[err?.code?.replace("auth/", "")]);
+            setLoading(false);
+          }
 
+          try {
             //create user on firestore
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
@@ -58,17 +69,24 @@ export const Register: React.FC = (): ReactElement => {
               email,
               photoURL: downloadURL,
             });
-
-            //create empty user chats on firestore
-            await setDoc(doc(db, "userChats", res.user.uid), {});
-            navigate("/");
-
           } catch (err: any) {
-            console.log("Erro ao fazer upload ad foto");
+            console.log("Erro ao criar perfil");
             console.log(err)
             alert.error(authErrors[err?.code?.replace("auth/", "")]);
             setLoading(false);
           }
+
+          try {
+            //create empty user chats on firestore
+            await setDoc(doc(db, "userChats", res.user.uid), {});
+          } catch (err: any) {
+            console.log("Erro ao criar um chat no firestore");
+            console.log(err)
+            alert.error(authErrors[err?.code?.replace("auth/", "")]);
+            setLoading(false);
+          }
+
+          navigate("/");
         });
       });
     } catch (err: any) {
@@ -127,7 +145,7 @@ export const Register: React.FC = (): ReactElement => {
               placeholder="Password" value={register.password}     
               name="password" onChange={e => handleChange(e)}
             />
-            <input required style={{ display: "none" }} type="file" id="file"  onChange={(e) => handleFileChange(e)}/>
+            <input style={{ display: "none" }} type="file" id="file"  onChange={(e) => handleFileChange(e)}/>
             <label htmlFor="file">
               { !register.userImage && 
                 <>

@@ -6,7 +6,7 @@ import { auth } from '../../firebase';
 import { Link } from 'react-router-dom';
 import { ILogin } from '../../models/models';
 import { authErrors } from '../../models/error';
-import { useAlert } from 'react-alert';
+import { useAlert } from '@blaumaus/react-alert';
 
 const LOGIN_INITIAL_VALUE: ILogin = {
     email: "",

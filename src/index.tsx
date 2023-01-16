@@ -4,7 +4,7 @@ import App from './App';
 import { AuthContextProvider } from './context/AuthContext';
 import { ChatContextProvider } from './context/ChatContext';
 import AlertTemplate from 'react-alert-template-oldschool-dark';
-import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+import { transitions, positions, Provider as AlertProvider } from '@blaumaus/react-alert';
 import { CookiesProvider } from 'react-cookie';
 
 const options = {

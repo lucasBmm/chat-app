@@ -16,11 +16,13 @@ export const Navbar: React.FC = (): JSX.Element => {
         navigate("/login")
     }
 
+    console.log(user?.photoURL)
+
     return (
         <div className='navbar'>
             <span className="logo">Chat App</span>
             <div className="user">
-                <img src={user?.photoURL ?? ''} alt="user profile picture" />
+                <img src={user?.photoURL || '/images/default-user-img.webp'} alt="user profile picture" />
                 <span>{ user?.displayName ?? ''}</span>
                 <button onClick={logout}>logout</button>
             </div>
