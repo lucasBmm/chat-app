@@ -1,0 +1,161 @@
+$purple:    #6C3483;
+$dark:      #05050C;
+$dark-gray: #181A20;
+$light-gray:#262A34;
+
+
+@mixin mobile {
+    @media screen and (max-width: 480px) {
+        @content 
+    }
+}
+
+@mixin tablet {
+    @media screen and (max-width: 768px) {
+        @content
+    }
+}
+
+@mixin laptop {
+    @media screen and (max-width: 1200px) {
+        @content
+    }
+}
+
+.form-container {
+    background-color: $dark;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: content-box;
+    overflow-y: hidden;
+
+    .form-wrapper {
+        background-color: $dark-gray;
+        height: 70%;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        
+        @include mobile() {
+            background-color: transparent;
+            width: 90%;
+            padding: 0;
+        }
+
+        .top-text {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            margin-bottom: 24%;
+
+            @include mobile() {
+                margin-bottom: 32%;
+            }
+            
+            .logo {
+                color: white;
+                font-size: 34px;
+                margin-bottom: 10px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+    
+            .title {
+                color: grey;
+                font-size: 14px;
+            }
+        }
+
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            @include mobile() {
+                width: 100%;
+            }
+
+            input {
+                padding: 15px;
+                border: none;
+                border-bottom: solid 1px $purple;
+                background-color: $light-gray;
+                border-radius: 5px;
+                color: white;
+                outline: none;
+
+                @include mobile() {
+                    border-radius: 15px;
+                    padding: 20px;
+                    border: none;
+                }
+
+                &::placeholder {
+                    color: rgb(175, 175, 175);
+                }
+            }
+
+            .link {
+                color: grey;
+                text-decoration: none;
+                text-align: end;
+                font-size: 14px;
+            }
+
+            button {
+                background-color: $purple;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+                transition: 0.2s;
+                margin-top: 10%;
+                border-radius: 5px;
+
+                @include mobile() {
+                    margin-top: 20%;
+                    padding: 20px;
+                    border-radius: 15px;
+                }
+
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
+
+            label {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: #8da4f1;
+                font-size: 12px;
+                cursor: pointer;
+
+                img {
+                    width: 32px;
+                }
+            }
+        }
+
+        p {
+            color: #FFF;
+            font-size: 14px;
+            margin-top: 10px;
+
+            @include mobile() {
+                font-size: 14px;
+            }
+
+            .link {
+                text-decoration: none;
+                color: $purple;
+            }
+        }
+    }
+}
