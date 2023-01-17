@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+env:
+  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
 jobs:
   build-and-deploy:
@@ -30,3 +32,4 @@ jobs:
 
     - name: Deploy the app
       run: firebase deploy --only hosting 
+
