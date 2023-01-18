@@ -1,6 +1,4 @@
 node_modules/
-.firebase/
 dev.env
 .env
-.firebaserc
-firebase.json
+build/
