@@ -4,3 +4,5 @@ dev.env
 .env
 .firebaserc
 firebase.json
+build/
+firebase-debug.log

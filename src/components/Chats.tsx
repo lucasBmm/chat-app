@@ -41,7 +41,6 @@ export const Chats: React.FC = (): JSX.Element => {
         <div className='chats'>
             {chats[0] && Object.entries(chats[0])?.sort((a,b)=> b[1]?.date?.seconds - a[1]?.date?.seconds).map((chat) => (
                 <div className="user-chat" key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
-                    {/* {JSON.stringify(chat)} */}
                 <img src={chat[1]?.userInfo?.photoURL} alt="" />
                 <div className="user-chat-info">
                     <span>{chat[1]?.userInfo?.displayName}</span>

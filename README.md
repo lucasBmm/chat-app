@@ -1,46 +1,85 @@
-# Getting Started with Create React App
+# Chat App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Live preview: https://chat-app-prod-de269.web.app
 
-## Available Scripts
+### Topics
 
-In the project directory, you can run:
+- [Overview](#overview)
+- [Stack](#stack)
+- [Installation](#setup)
+- [Pages](#pages)
+  - [Login](#login)
+  - [Register](#register)
+  - [Chat](#chat)
 
-### `npm start`
+## Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The project is basically a web chat made with React and Firebase as a backend. The application feature a user-friendly interface that allows users to send and receive messages in real-time. Firebase provide the necessary tools for authentication, storage, and real-time data synchronization. The application could also include features such as user profiles, emojis, and image/file sharing. Overall, the combination of React and Firebase allow for a fast and efficient chat experience for the users
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Stack 
 
-### `npm test`
+These are the stack I used to create the project
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<ul>
+  <li>React</li>
+  <li>Typescript</li>
+  <li>Scss</li>
+  <li>GitHub Actions for build and deploy to firebase</li>
+  <li>Firebase</li>
+</ul>
 
-### `npm run build`
+## Setup
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Clone this project 
+```
+  git clone https://github.com/lucasBmm/chat-app.git
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Enter the project
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+  cd chat-app
+```
 
-### `npm run eject`
+Install dependencies
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+  npm install
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Now, you must create a `dev.env` file inside the project folder with the follow structure:\
+<small>Learn more about in firebase documentation: https://firebase.google.com/docs/web/learn-more#config-object</small>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```js
+  REACT_APP_FIREBASE_APIKEY="yourkey"
+  REACT_APP_FIREBASE_AUTH_DOMAIN="yourfirebaseauth"
+  REACT_APP_FIREBASE_PROJECT_ID="yourproject"
+  REACT_APP_FIREBASE_STORAGE_BUCKET="yourfirebasebucket"
+  REACT_APP_FIREBASE_MENSSAGING_SENDER_ID="yourfirebasemessasing"
+  REACT_APP_FIREBASE_APP_ID="yourappid"
+  REACT_APP_FIREBASE_MEASUREMENT_ID="yourmeasurementid"
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Finally, start the project in development mode.
 
-## Learn More
+```
+  npm run start:dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Pages
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+These are the pages of the chat project. All was made thinking in responsiveness.
+
+### Login
+
+|   ![image](readmeAssets/loginDesktop.png) | ![image](readmeAssets/loginMobile.png)   |
+|-------------------------------------------|------------------------------------------|
+
+### Register
+
+|   ![image](readmeAssets/registerDesktop.png) | ![image](readmeAssets/registerMobile.png)   |
+|-------------------------------------------|------------------------------------------|
+
+### Chat
+|   ![image](readmeAssets/ChatDesktop.png) | ![image](readmeAssets/chatMobile.png)   |
+|-------------------------------------------|------------------------------------------|

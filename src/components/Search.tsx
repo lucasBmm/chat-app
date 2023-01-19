@@ -29,7 +29,6 @@ export const Search: React.FC = (): JSX.Element => {
             return;
         }
 
-        console.log(username);
         const q = query(
             collection(db, "users"), 
             where("displayName", "==", username)
@@ -41,6 +40,7 @@ export const Search: React.FC = (): JSX.Element => {
                 setErr(true);
                 return;
             } else {
+                setErr(false);
                 querySnapshot.forEach((doc) => {
                     if (!doc.data()) {
                         setErr(true)
