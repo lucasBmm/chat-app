@@ -1,35 +1,33 @@
-name: Deploy to Firebase
-
+name: Build and Deploy
 on:
   push:
     branches:
       - main
-env:
-  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
 jobs:
-  build-and-deploy:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Install dependencies
-      run: npm i
-
-    - name: Build the React app
-      run: CI=false npm run build
-
-    - name: Install Firebase CLI
-      run: npm install -g firebase-tools
-      
-    - name: Init Hosting
-      run: firebase init hosting:github
-
-    - name: Login to Firebase
-      run: firebase login:ci --token ${{ env.FIREBASE_TOKEN }}
-
-    - name: Deploy the app
-      run: firebase deploy --only hosting 
-
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        run: CI=false npm run build
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: dist
+          path: dist
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
